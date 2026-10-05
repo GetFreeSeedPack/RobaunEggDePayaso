@@ -1,25 +1,44 @@
 -- =============================================
---  INSTANT TP — NO TE REGRESA + ANTI-KICK
---  Se queda fijo · Bloquea el regreso · Seguro
+--  TP + REJOIN AUTO-EJECUTABLE
+--  Al volver a entrar → carga el script solo
 -- =============================================
 
 local Player = game:GetService("Players").LocalPlayer
 local UIS = game:GetService("UserInputService")
+local TService = game:GetService("TeleportService")
 
--- 📍 TU ZONA SEGURA
-local ZONA_SEGURA = Vector3.new(340.52, 4.00, -1.42)
+-- 📍 CONFIGURACIÓN
+local JUEGO_ID = 77881572888789
+local ZONA_SEGURA     = Vector3.new(340.52, 4.00, -1.42)    -- ⚡ Zona Segura
+local ZONA_FOREST     = Vector3.new(3605.74, 4.00, -0.99)   -- 🌲 Forest
+local ZONA_CEMENTERIO = Vector3.new(2965.09, 4.00, -41.94)  -- 🪦 Cementerio
 
--- ⚡ CONFIGURACIÓN
+-- 🔗 TU SCRIPT QUE SE CARGA SOLO
+local SCRIPT_URL = "https://raw.githubusercontent.com/GetFreeSeedPack/RobaunEggDePayaso/main/Steal%20Egg%20Payaso"
+
+-- ⚡ VELOCIDAD
 local ALTITUD_SEGURA = 1.0
-local RETRASO_ANTI = 0.008
-local BLOQUEAR_REGRESO = true -- ✅ EVITA QUE TE REGRESE
-local TIEMPO_PROTECCION = 1.5 -- Mantiene la posición fija 1.5s
+local RETRASO_ANTI = 0.006
+local BLOQUEAR_REGRESO = true
+local TIEMPO_PROTECCION = 1.5
 
 local Activo = false
+local RejoinActivo = false
 local MenuMinimizado = false
 
--- 🛡️ TP SEGURO + MANTIENE POSICIÓN
-local function TpSeguroFijo()
+-- ✅ EJECUTAR TU SCRIPT AUTOMÁTICAMENTE
+local function EjecutarScript()
+    task.wait(1) -- Espera a que cargue bien
+    local exito, error = pcall(function()
+        loadstring(game:HttpGet(SCRIPT_URL))()
+    end)
+    if not exito then
+        warn("⚠️ No se pudo cargar el script: " .. tostring(error))
+    end
+end
+
+-- 🛡️ TP SEGURO
+local function IrAZona(Destino)
     if Activo then return end
     Activo = true
 
@@ -30,35 +49,31 @@ local function TpSeguroFijo()
     end
     local HRP = Char.HumanoidRootPart
     local Inicio = HRP.Position
-    local Destino = ZONA_SEGURA + Vector3.new(0, ALTITUD_SEGURA, 0)
+    local DestinoFinal = Destino + Vector3.new(0, ALTITUD_SEGURA, 0)
 
-    -- ⚡ 4 pasos intermedios = el servidor lo ve como movimiento normal
-    local Pasos = 4
+    local Pasos = 5
     for i = 1, Pasos do
         if not Activo then break end
         local Progreso = i / Pasos
-        local NuevaPos = Inicio:Lerp(Destino, Progreso)
+        local NuevaPos = Inicio:Lerp(DestinoFinal, Progreso)
         HRP.CFrame = CFrame.new(NuevaPos)
         task.wait(RETRASO_ANTI)
     end
 
-    -- ✅ ATERRIZAJE FIRME — NO TE MUEVE
     if Activo then
-        HRP.CFrame = CFrame.new(ZONA_SEGURA + Vector3.new(0, 0.5, 0))
-        task.wait(0.02)
-        HRP.CFrame = CFrame.new(ZONA_SEGURA + Vector3.new(0, 0.15, 0))
-        task.wait(0.02)
-        HRP.CFrame = CFrame.new(ZONA_SEGURA)
+        HRP.CFrame = CFrame.new(Destino + Vector3.new(0, 0.5, 0))
+        task.wait(0.015)
+        HRP.CFrame = CFrame.new(Destino + Vector3.new(0, 0.15, 0))
+        task.wait(0.015)
+        HRP.CFrame = CFrame.new(Destino)
     end
 
-    -- 🛡️ BLOQUEO DE REGRESO — Reafirma la posición varias veces
     if BLOQUEAR_REGRESO then
         local TiempoInicio = os.clock()
         while os.clock() - TiempoInicio < TIEMPO_PROTECCION and Activo do
             task.wait(0.05)
-            -- Si te movió, te regresa a la zona segura
-            if (HRP.Position - ZONA_SEGURA).Magnitude > 3 then
-                HRP.CFrame = CFrame.new(ZONA_SEGURA)
+            if HRP and (HRP.Position - Destino).Magnitude > 3 then
+                HRP.CFrame = CFrame.new(Destino)
             end
         end
     end
@@ -66,16 +81,20 @@ local function TpSeguroFijo()
     Activo = false
 end
 
--- ⛔ PARAR
-local function Parar()
-    Activo = false
+-- 🔄 REJOIN + CARGA EL SCRIPT SOLO
+local function Rejoin()
+    if RejoinActivo then return end
+    RejoinActivo = true
+    task.spawn(function()
+        task.wait(0.3)
+        TService:TeleportToPlaceInstance(JUEGO_ID, game.JobId, Player)
+    end)
 end
 
 -- 🖱️ ARRASTRAR
 local function HacerMovible(Elemento)
     local Arrastrando = false
     local Diferencia = Vector2.new()
-
     Elemento.InputBegan:Connect(function(Input)
         if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
             Arrastrando = true
@@ -87,7 +106,6 @@ local function HacerMovible(Elemento)
             end)
         end
     end)
-
     UIS.InputChanged:Connect(function(Input)
         if Arrastrando and (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch) then
             local Pos = UIS:GetMouseLocation() - Diferencia
@@ -97,98 +115,139 @@ local function HacerMovible(Elemento)
 end
 
 -- 📋 MENÚ
-local Gui = Instance.new("ScreenGui")
-Gui.Name = "InstantTP"
-Gui.Parent = game:GetService("CoreGui")
-Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+local function CrearMenu()
+    if game:GetService("CoreGui"):FindFirstChild("TPMenu") then return end
 
-local Marco = Instance.new("Frame")
-Marco.Size = UDim2.new(0, 240, 0, 200)
-Marco.Position = UDim2.new(0.02, 0, 0.45, 0)
-Marco.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
-Marco.BorderSizePixel = 2
-Marco.BorderColor3 = Color3.fromRGB(0, 255, 127)
-Marco.Parent = Gui
+    local Gui = Instance.new("ScreenGui")
+    Gui.Name = "TPMenu"
+    Gui.Parent = game:GetService("CoreGui")
+    Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    Gui.ResetOnSpawn = false
 
-local Barra = Instance.new("Frame")
-Barra.Size = UDim2.new(1, 0, 0, 40)
-Barra.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
-Barra.Parent = Marco
+    local Marco = Instance.new("Frame")
+    Marco.Size = UDim2.new(0, 240, 0, 330)
+    Marco.Position = UDim2.new(0.02, 0, 0.45, 0)
+    Marco.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
+    Marco.BorderSizePixel = 2
+    Marco.BorderColor3 = Color3.fromRGB(80, 220, 120)
+    Marco.Parent = Gui
 
-local Titulo = Instance.new("TextLabel")
-Titulo.Size = UDim2.new(1, -50, 1, 0)
-Titulo.BackgroundTransparency = 1
-Titulo.Text = "⚡ INSTANT TP"
-Titulo.Font = Enum.Font.GothamBold
-Titulo.TextSize = 16
-Titulo.TextColor3 = Color3.fromRGB(0, 255, 127)
-Titulo.Parent = Barra
+    local Barra = Instance.new("Frame")
+    Barra.Size = UDim2.new(1, 0, 0, 40)
+    Barra.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
+    Barra.Parent = Marco
 
-local BtnMin = Instance.new("TextButton")
-BtnMin.Size = UDim2.new(0, 40, 1, 0)
-BtnMin.Position = UDim2.new(1, -42, 0, 0)
-BtnMin.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
-BtnMin.Text = "−"
-BtnMin.Font = Enum.Font.GothamBold
-BtnMin.TextSize = 22
-BtnMin.TextColor3 = Color3.fromRGB(0, 0, 0)
-BtnMin.Parent = Barra
+    local Titulo = Instance.new("TextLabel")
+    Titulo.Size = UDim2.new(1, -50, 1, 0)
+    Titulo.BackgroundTransparency = 1
+    Titulo.Text = "⚡ TP + AUTO-LOAD"
+    Titulo.Font = Enum.Font.GothamBold
+    Titulo.TextSize = 16
+    Titulo.TextColor3 = Color3.fromRGB(80, 220, 120)
+    Titulo.Parent = Barra
 
-local Contenido = Instance.new("Frame")
-Contenido.Size = UDim2.new(1, -20, 1, -50)
-Contenido.Position = UDim2.new(0, 10, 0, 45)
-Contenido.BackgroundTransparency = 1
-Contenido.Parent = Marco
+    local BtnMin = Instance.new("TextButton")
+    BtnMin.Size = UDim2.new(0, 40, 1, 0)
+    BtnMin.Position = UDim2.new(1, -42, 0, 0)
+    BtnMin.BackgroundColor3 = Color3.fromRGB(80, 220, 120)
+    BtnMin.Text = "−"
+    BtnMin.Font = Enum.Font.GothamBold
+    BtnMin.TextSize = 22
+    BtnMin.TextColor3 = Color3.fromRGB(0, 0, 0)
+    BtnMin.Parent = Barra
 
--- Botón Instant
-local BtnInstant = Instance.new("TextButton")
-BtnInstant.Size = UDim2.new(1, 0, 0, 60)
-BtnInstant.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
-BtnInstant.Text = "⚡ IR A ZONA SEGURA"
-BtnInstant.Font = Enum.Font.GothamBold
-BtnInstant.TextSize = 19
-BtnInstant.TextColor3 = Color3.fromRGB(0, 0, 0)
-BtnInstant.AutoLocalize = false
-BtnInstant.Parent = Contenido
+    local Contenido = Instance.new("Frame")
+    Contenido.Size = UDim2.new(1, -20, 1, -50)
+    Contenido.Position = UDim2.new(0, 10, 0, 45)
+    Contenido.BackgroundTransparency = 1
+    Contenido.Parent = Marco
 
--- Botón Parar
-local BtnParar = Instance.new("TextButton")
-BtnParar.Size = UDim2.new(1, 0, 0, 60)
-BtnParar.Position = UDim2.new(0, 0, 0, 75)
-BtnParar.BackgroundColor3 = Color3.fromRGB(200, 30, 30)
-BtnParar.Text = "⛔ PARAR"
-BtnParar.Font = Enum.Font.GothamBold
-BtnParar.TextSize = 18
-BtnParar.TextColor3 = Color3.fromRGB(255, 255, 255)
-BtnParar.AutoLocalize = false
-BtnParar.Parent = Contenido
+    -- ⚡ ZONA SEGURA
+    local BtnSegura = Instance.new("TextButton")
+    BtnSegura.Size = UDim2.new(1, 0, 0, 52)
+    BtnSegura.BackgroundColor3 = Color3.fromRGB(80, 220, 120)
+    BtnSegura.Text = "⚡ ZONA SEGURA"
+    BtnSegura.Font = Enum.Font.GothamBold
+    BtnSegura.TextSize = 17
+    BtnSegura.TextColor3 = Color3.fromRGB(0, 0, 0)
+    BtnSegura.AutoLocalize = false
+    BtnSegura.Parent = Contenido
 
--- Botón Restaurar
-local BtnRestaurar = Instance.new("TextButton")
-BtnRestaurar.Size = UDim2.new(0, 140, 0, 45)
-BtnRestaurar.Position = Marco.Position
-BtnRestaurar.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
-BtnRestaurar.BorderSizePixel = 2
-BtnRestaurar.BorderColor3 = Color3.fromRGB(0, 255, 127)
-BtnRestaurar.Text = "⚡ INSTANT TP"
-BtnRestaurar.Font = Enum.Font.GothamBold
-BtnRestaurar.TextSize = 14
-BtnRestaurar.TextColor3 = Color3.fromRGB(0, 255, 127)
-BtnRestaurar.Visible = false
-BtnRestaurar.Parent = Gui
+    -- 🌲 FOREST
+    local BtnForest = Instance.new("TextButton")
+    BtnForest.Size = UDim2.new(1, 0, 0, 52)
+    BtnForest.Position = UDim2.new(0, 0, 0, 57)
+    BtnForest.BackgroundColor3 = Color3.fromRGB(80, 220, 120)
+    BtnForest.Text = "🌲 IR A FOREST"
+    BtnForest.Font = Enum.Font.GothamBold
+    BtnForest.TextSize = 17
+    BtnForest.TextColor3 = Color3.fromRGB(0, 0, 0)
+    BtnForest.AutoLocalize = false
+    BtnForest.Parent = Contenido
 
-local function ToggleMin()
-    MenuMinimizado = not MenuMinimizado
-    Marco.Visible = not MenuMinimizado
-    BtnRestaurar.Visible = MenuMinimizado
+    -- 🪦 CEMENTERIO
+    local BtnCementerio = Instance.new("TextButton")
+    BtnCementerio.Size = UDim2.new(1, 0, 0, 52)
+    BtnCementerio.Position = UDim2.new(0, 0, 0, 114)
+    BtnCementerio.BackgroundColor3 = Color3.fromRGB(150, 120, 90)
+    BtnCementerio.Text = "🪦 IR A CEMENTERIO"
+    BtnCementerio.Font = Enum.Font.GothamBold
+    BtnCementerio.TextSize = 17
+    BtnCementerio.TextColor3 = Color3.fromRGB(255, 255, 255)
+    BtnCementerio.AutoLocalize = false
+    BtnCementerio.Parent = Contenido
+
+    -- 🔄 REJOIN
+    local BtnRejoin = Instance.new("TextButton")
+    BtnRejoin.Size = UDim2.new(1, 0, 0, 52)
+    BtnRejoin.Position = UDim2.new(0, 0, 0, 171)
+    BtnRejoin.BackgroundColor3 = Color3.fromRGB(255, 180, 0)
+    BtnRejoin.Text = "🔄 REUNIRSE DE NUEVO"
+    BtnRejoin.Font = Enum.Font.GothamBold
+    BtnRejoin.TextSize = 16
+    BtnRejoin.TextColor3 = Color3.fromRGB(0, 0, 0)
+    BtnRejoin.AutoLocalize = false
+    BtnRejoin.Parent = Contenido
+
+    -- Botón Restaurar
+    local BtnRestaurar = Instance.new("TextButton")
+    BtnRestaurar.Size = UDim2.new(0, 170, 0, 45)
+    BtnRestaurar.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
+    BtnRestaurar.BorderSizePixel = 2
+    BtnRestaurar.BorderColor3 = Color3.fromRGB(80, 220, 120)
+    BtnRestaurar.Text = "⚡ TP + AUTO-LOAD"
+    BtnRestaurar.Font = Enum.Font.GothamBold
+    BtnRestaurar.TextSize = 14
+    BtnRestaurar.TextColor3 = Color3.fromRGB(80, 220, 120)
+    BtnRestaurar.Visible = false
+    BtnRestaurar.Parent = Gui
+
+    local function ToggleMin()
+        MenuMinimizado = not MenuMinimizado
+        Marco.Visible = not MenuMinimizado
+        BtnRestaurar.Visible = MenuMinimizado
+        if MenuMinimizado then
+            BtnRestaurar.Position = Marco.Position
+        end
+    end
+
+    -- Conectar
+    BtnSegura.MouseButton1Click:Connect(function() IrAZona(ZONA_SEGURA) end)
+    BtnForest.MouseButton1Click:Connect(function() IrAZona(ZONA_FOREST) end)
+    BtnCementerio.MouseButton1Click:Connect(function() IrAZona(ZONA_CEMENTERIO) end)
+    BtnRejoin.MouseButton1Click:Connect(Rejoin)
+    BtnMin.MouseButton1Click:Connect(ToggleMin)
+    BtnRestaurar.MouseButton1Click:Connect(ToggleMin)
+
+    HacerMovible(Marco)
+    HacerMovible(BtnRestaurar)
 end
 
--- Conectar
-BtnInstant.MouseButton1Click:Connect(TpSeguroFijo)
-BtnParar.MouseButton1Click:Connect(Parar)
-BtnMin.MouseButton1Click:Connect(ToggleMin)
-BtnRestaurar.MouseButton1Click:Connect(ToggleMin)
-
--- Arrastrar
-HacerMovible(Marco)
-HacerMovible(BtnRestaurar)
+-- ✅ AL ENTRAR → CARGA TU SCRIPT AUTOMÁTICAMENTE
+CrearMenu()
+EjecutarScript() -- La primera vez también carga
+Player.CharacterAdded:Connect(function()
+    task.wait(0.5)
+    CrearMenu()
+    EjecutarScript() -- Al reentrar con Rejoin → carga solo
+end)
