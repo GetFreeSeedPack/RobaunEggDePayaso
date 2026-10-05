@@ -1,0 +1,194 @@
+-- =============================================
+--  INSTANT TP — NO TE REGRESA + ANTI-KICK
+--  Se queda fijo · Bloquea el regreso · Seguro
+-- =============================================
+
+local Player = game:GetService("Players").LocalPlayer
+local UIS = game:GetService("UserInputService")
+
+-- 📍 TU ZONA SEGURA
+local ZONA_SEGURA = Vector3.new(340.52, 4.00, -1.42)
+
+-- ⚡ CONFIGURACIÓN
+local ALTITUD_SEGURA = 1.0
+local RETRASO_ANTI = 0.008
+local BLOQUEAR_REGRESO = true -- ✅ EVITA QUE TE REGRESE
+local TIEMPO_PROTECCION = 1.5 -- Mantiene la posición fija 1.5s
+
+local Activo = false
+local MenuMinimizado = false
+
+-- 🛡️ TP SEGURO + MANTIENE POSICIÓN
+local function TpSeguroFijo()
+    if Activo then return end
+    Activo = true
+
+    local Char = Player.Character
+    if not Char or not Char:FindFirstChild("HumanoidRootPart") then
+        Activo = false
+        return
+    end
+    local HRP = Char.HumanoidRootPart
+    local Inicio = HRP.Position
+    local Destino = ZONA_SEGURA + Vector3.new(0, ALTITUD_SEGURA, 0)
+
+    -- ⚡ 4 pasos intermedios = el servidor lo ve como movimiento normal
+    local Pasos = 4
+    for i = 1, Pasos do
+        if not Activo then break end
+        local Progreso = i / Pasos
+        local NuevaPos = Inicio:Lerp(Destino, Progreso)
+        HRP.CFrame = CFrame.new(NuevaPos)
+        task.wait(RETRASO_ANTI)
+    end
+
+    -- ✅ ATERRIZAJE FIRME — NO TE MUEVE
+    if Activo then
+        HRP.CFrame = CFrame.new(ZONA_SEGURA + Vector3.new(0, 0.5, 0))
+        task.wait(0.02)
+        HRP.CFrame = CFrame.new(ZONA_SEGURA + Vector3.new(0, 0.15, 0))
+        task.wait(0.02)
+        HRP.CFrame = CFrame.new(ZONA_SEGURA)
+    end
+
+    -- 🛡️ BLOQUEO DE REGRESO — Reafirma la posición varias veces
+    if BLOQUEAR_REGRESO then
+        local TiempoInicio = os.clock()
+        while os.clock() - TiempoInicio < TIEMPO_PROTECCION and Activo do
+            task.wait(0.05)
+            -- Si te movió, te regresa a la zona segura
+            if (HRP.Position - ZONA_SEGURA).Magnitude > 3 then
+                HRP.CFrame = CFrame.new(ZONA_SEGURA)
+            end
+        end
+    end
+
+    Activo = false
+end
+
+-- ⛔ PARAR
+local function Parar()
+    Activo = false
+end
+
+-- 🖱️ ARRASTRAR
+local function HacerMovible(Elemento)
+    local Arrastrando = false
+    local Diferencia = Vector2.new()
+
+    Elemento.InputBegan:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+            Arrastrando = true
+            Diferencia = UIS:GetMouseLocation() - Vector2.new(Elemento.AbsolutePosition.X, Elemento.AbsolutePosition.Y)
+            Input.Changed:Connect(function()
+                if Input.UserInputState == Enum.UserInputState.End then
+                    Arrastrando = false
+                end
+            end)
+        end
+    end)
+
+    UIS.InputChanged:Connect(function(Input)
+        if Arrastrando and (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch) then
+            local Pos = UIS:GetMouseLocation() - Diferencia
+            Elemento.Position = UDim2.new(0, Pos.X, 0, Pos.Y)
+        end
+    end)
+end
+
+-- 📋 MENÚ
+local Gui = Instance.new("ScreenGui")
+Gui.Name = "InstantTP"
+Gui.Parent = game:GetService("CoreGui")
+Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local Marco = Instance.new("Frame")
+Marco.Size = UDim2.new(0, 240, 0, 200)
+Marco.Position = UDim2.new(0.02, 0, 0.45, 0)
+Marco.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
+Marco.BorderSizePixel = 2
+Marco.BorderColor3 = Color3.fromRGB(0, 255, 127)
+Marco.Parent = Gui
+
+local Barra = Instance.new("Frame")
+Barra.Size = UDim2.new(1, 0, 0, 40)
+Barra.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
+Barra.Parent = Marco
+
+local Titulo = Instance.new("TextLabel")
+Titulo.Size = UDim2.new(1, -50, 1, 0)
+Titulo.BackgroundTransparency = 1
+Titulo.Text = "⚡ INSTANT TP"
+Titulo.Font = Enum.Font.GothamBold
+Titulo.TextSize = 16
+Titulo.TextColor3 = Color3.fromRGB(0, 255, 127)
+Titulo.Parent = Barra
+
+local BtnMin = Instance.new("TextButton")
+BtnMin.Size = UDim2.new(0, 40, 1, 0)
+BtnMin.Position = UDim2.new(1, -42, 0, 0)
+BtnMin.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
+BtnMin.Text = "−"
+BtnMin.Font = Enum.Font.GothamBold
+BtnMin.TextSize = 22
+BtnMin.TextColor3 = Color3.fromRGB(0, 0, 0)
+BtnMin.Parent = Barra
+
+local Contenido = Instance.new("Frame")
+Contenido.Size = UDim2.new(1, -20, 1, -50)
+Contenido.Position = UDim2.new(0, 10, 0, 45)
+Contenido.BackgroundTransparency = 1
+Contenido.Parent = Marco
+
+-- Botón Instant
+local BtnInstant = Instance.new("TextButton")
+BtnInstant.Size = UDim2.new(1, 0, 0, 60)
+BtnInstant.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
+BtnInstant.Text = "⚡ IR A ZONA SEGURA"
+BtnInstant.Font = Enum.Font.GothamBold
+BtnInstant.TextSize = 19
+BtnInstant.TextColor3 = Color3.fromRGB(0, 0, 0)
+BtnInstant.AutoLocalize = false
+BtnInstant.Parent = Contenido
+
+-- Botón Parar
+local BtnParar = Instance.new("TextButton")
+BtnParar.Size = UDim2.new(1, 0, 0, 60)
+BtnParar.Position = UDim2.new(0, 0, 0, 75)
+BtnParar.BackgroundColor3 = Color3.fromRGB(200, 30, 30)
+BtnParar.Text = "⛔ PARAR"
+BtnParar.Font = Enum.Font.GothamBold
+BtnParar.TextSize = 18
+BtnParar.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnParar.AutoLocalize = false
+BtnParar.Parent = Contenido
+
+-- Botón Restaurar
+local BtnRestaurar = Instance.new("TextButton")
+BtnRestaurar.Size = UDim2.new(0, 140, 0, 45)
+BtnRestaurar.Position = Marco.Position
+BtnRestaurar.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
+BtnRestaurar.BorderSizePixel = 2
+BtnRestaurar.BorderColor3 = Color3.fromRGB(0, 255, 127)
+BtnRestaurar.Text = "⚡ INSTANT TP"
+BtnRestaurar.Font = Enum.Font.GothamBold
+BtnRestaurar.TextSize = 14
+BtnRestaurar.TextColor3 = Color3.fromRGB(0, 255, 127)
+BtnRestaurar.Visible = false
+BtnRestaurar.Parent = Gui
+
+local function ToggleMin()
+    MenuMinimizado = not MenuMinimizado
+    Marco.Visible = not MenuMinimizado
+    BtnRestaurar.Visible = MenuMinimizado
+end
+
+-- Conectar
+BtnInstant.MouseButton1Click:Connect(TpSeguroFijo)
+BtnParar.MouseButton1Click:Connect(Parar)
+BtnMin.MouseButton1Click:Connect(ToggleMin)
+BtnRestaurar.MouseButton1Click:Connect(ToggleMin)
+
+-- Arrastrar
+HacerMovible(Marco)
+HacerMovible(BtnRestaurar)
